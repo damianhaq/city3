@@ -5,7 +5,7 @@ const game = new Game();
 game.init("canvas", GAME.width, GAME.height, 1);
 game.updateCamera(600, 400);
 
-const map = createMap(30, 30, 40);
+const map = createMap(30, 30, 30);
 addIdToMap(map, 0.1, ID.tree);
 addIdToMap(map, 0.1, ID.stone);
 addIdToMap(map, 0.1, ID.water);
@@ -77,9 +77,9 @@ function drawMap(map) {
 
 function drawTree(x, y) {
   // internal constants
-  const trunkHeight = 10;
-  const trunkWidth = 5;
-  const foliageRadius = 10;
+  const trunkHeight = map.cellLength / 4;
+  const trunkWidth = map.cellLength / 8;
+  const foliageRadius = map.cellLength / 4;
 
   // adding camera position
   x -= game.camera.x;
@@ -92,7 +92,7 @@ function drawTree(x, y) {
   game.ctx.fillStyle = "#8B4513"; // Kolor brązowy
   game.ctx.fillRect(
     x - trunkWidth / 2,
-    y - trunkHeight + 15,
+    y - trunkHeight + map.cellLength / 2.5,
     trunkWidth,
     trunkHeight
   );
@@ -106,13 +106,13 @@ function drawTree(x, y) {
 
 function drawStone(x, y) {
   // internal constants
-  const stoneRadius = 5;
+  const stoneRadius = map.cellLength / 7;
   // adding camera position
   x -= game.camera.x;
   y -= game.camera.y;
 
   // correction position
-  // y -= 2;
+  y -= 2;
 
   // Rysowanie kamienia
   game.ctx.beginPath();
@@ -122,13 +122,25 @@ function drawStone(x, y) {
 
   // kolejny kanień
   game.ctx.beginPath();
-  game.ctx.arc(x + 3, y + 3, stoneRadius + 2, 0, Math.PI * 2);
+  game.ctx.arc(
+    x + map.cellLength / 8,
+    y + map.cellLength / 8,
+    stoneRadius * 1.2,
+    0,
+    Math.PI * 2
+  );
   game.ctx.fillStyle = "#4f4f4f"; // Kolor szary
   game.ctx.fill();
 
   // kolejny kanień
   game.ctx.beginPath();
-  game.ctx.arc(x - 3, y + 4, stoneRadius + 1, 0, Math.PI * 2);
+  game.ctx.arc(
+    x - map.cellLength / 8,
+    y + map.cellLength / 8,
+    stoneRadius * 1.3,
+    0,
+    Math.PI * 2
+  );
   game.ctx.fillStyle = "#585858FF"; // Kolor szary
   game.ctx.fill();
 }
@@ -168,12 +180,13 @@ function drawGrass(x, y) {
   y -= game.camera.y;
 
   // correction position
-  y += 5;
+  y += map.cellLength / 8;
 
   game.ctx.strokeStyle = "#228B22"; // Zielony kolor trawy
   game.ctx.lineWidth = 2;
 
-  const radius = 10;
+  const radius = map.cellLength / 4;
+
   game.ctx.beginPath();
   game.ctx.arc(x - radius, y, radius, 0, degToRad(300), true);
   game.ctx.stroke();
