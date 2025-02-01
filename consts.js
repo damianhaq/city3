@@ -1,6 +1,7 @@
 export const GAME = {
   width: 1200,
   height: 800,
+  showGrid: false,
 };
 
 export const ID = {

@@ -12,6 +12,7 @@ export class Game {
     this.isDebug = true;
     this.lastTime = 0;
     this.fpsCounter = 0;
+    this.backgroundColor = "#d4d4d4";
 
     this.groups = [];
 
@@ -158,7 +159,7 @@ export class Game {
   }
 
   clearRect() {
-    this.ctx.fillStyle = "#898989";
+    this.ctx.fillStyle = this.backgroundColor;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
