@@ -138,6 +138,10 @@ export class Game {
       this.mouse.y = Math.round(ev.offsetY / this.scaleFactor);
     });
 
+    this.canvas.addEventListener("wheel", (ev) => {
+      this.onMouseWheel(ev);
+    });
+
     this.canvas.addEventListener("keydown", (ev) => {
       if (!this.keys.key[ev.keyCode]) this.keys.key[ev.keyCode] = true;
       // console.log(ev.keyCode);
@@ -162,6 +166,8 @@ export class Game {
     this.ctx.fillStyle = this.backgroundColor;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
+
+  onMouseWheel(ev) {}
 
   // Game loop
   gameLoop(timestamp) {
