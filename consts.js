@@ -6,18 +6,15 @@ export const GAME = {
   showGrid: false,
 };
 
-// export const RESOURCES = [
-//   { id: 1, name: "Stone" },
-//   { id: 2, name: "Grass" },
-//   { id: 3, name: "Water" },
-//   { id: 4, name: "Tree" },
-// ];
+export function getCell(x, y, map) {
+  return map.arr[y][x];
+}
 
 export const RESOURCES = {
-  stone: { id: 1, name: "Stone", drawFunc: drawStone },
-  grass: { id: 2, name: "Grass", drawFunc: drawGrass },
-  water: { id: 3, name: "Water", drawFunc: drawWater },
-  tree: { id: 4, name: "Tree", drawFunc: drawTree },
+  stone: { id: 1, name: "Stone", drawCallback: drawStone, collidable: true },
+  grass: { id: 2, name: "Grass", drawCallback: drawGrass, collidable: false },
+  water: { id: 3, name: "Water", drawCallback: drawWater, collidable: true },
+  tree: { id: 4, name: "Tree", drawCallback: drawTree, collidable: false },
 };
 
 // drawing functions

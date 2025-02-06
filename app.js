@@ -1,4 +1,4 @@
-import { GAME, RESOURCES } from "./consts.js";
+import { GAME, getCell, RESOURCES } from "./consts.js";
 import { drawCircleOnMap, drawRectOnMap, Game } from "./DGamev3.js";
 import { Resource } from "./Resource.js";
 
@@ -6,36 +6,12 @@ export const game = new Game();
 game.init("canvas", GAME.width, GAME.height, 1);
 game.updateCamera(600, 400);
 
-export const map = createMap(30, 30, 20);
+export const map = createMap(30, 30, 40);
 
-const stone = new Resource(
-  "Stone",
-  RESOURCES.stone.id,
-  map,
-  game,
-  RESOURCES.stone.drawFunc
-);
-const tree = new Resource(
-  "Tree",
-  RESOURCES.tree.id,
-  map,
-  game,
-  RESOURCES.tree.drawFunc
-);
-const water = new Resource(
-  "Water",
-  RESOURCES.water.id,
-  map,
-  game,
-  RESOURCES.water.drawFunc
-);
-const grass = new Resource(
-  "Grass",
-  RESOURCES.grass.id,
-  map,
-  game,
-  RESOURCES.grass.drawFunc
-);
+const stone = new Resource(RESOURCES.stone, map, game);
+const grass = new Resource(RESOURCES.grass, map, game);
+const water = new Resource(RESOURCES.water, map, game);
+const tree = new Resource(RESOURCES.tree, map, game);
 
 addResourceToMap(map, 0.1, tree);
 addResourceToMap(map, 0.01, water);
@@ -56,10 +32,22 @@ game.onMouseWheel = function (e) {
     game.camera.x += zoomFactor * cellsOnLeft;
     game.camera.y += zoomFactor * cellsOnTop;
   } else {
+    if (map.cellLength <= 10) return; // dont zoom out more than 10
     map.cellLength -= zoomFactor;
     game.camera.x -= zoomFactor * cellsOnLeft;
     game.camera.y -= zoomFactor * cellsOnTop;
   }
+
+  console.log("zoom", map.cellLength);
+};
+
+game.onClickLMB = function () {
+  // get cell position include camera position and camera
+  const x = Math.floor((game.mouse.x + game.camera.x) / map.cellLength);
+  const y = Math.floor((game.mouse.y + game.camera.y) / map.cellLength);
+
+  const cell = getCell(x, y, map);
+  console.log("LMB", x, y, cell);
 };
 
 game.draw = function () {
@@ -70,7 +58,7 @@ game.update = function (deltaTime) {
   this.moveCameraRMB();
 };
 
-console.log(map);
+console.log("map", map);
 
 function createMap(cellsWidth, cellsHeight, cellLength, fill = 0) {
   // create 2d array
