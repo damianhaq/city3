@@ -10,3 +10,5 @@ Key Features:
 - **Strategic Gameplay**: Plan and execute strategies to ensure the survival and prosperity of your city.
 
 Are you ready to build the ultimate city and lead your people to survival? Dive into City3 and test your city-building and survival skills!
+
+[Check out the game on GitHub Pages!](https://damianhaq.github.io/city3/)
