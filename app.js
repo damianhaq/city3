@@ -25,22 +25,22 @@ humans.push(human);
 
 console.log("humans", humans);
 
-const stone = new Resource(RESOURCES.stone, game);
-const grass = new Resource(RESOURCES.grass, game);
-const water = new Resource(RESOURCES.water, game);
-const tree = new Resource(RESOURCES.tree, game);
+// const stone = new Resource(RESOURCES.stone, game);
+// const grass = new Resource(RESOURCES.grass, game);
+// const water = new Resource(RESOURCES.water, game);
+// const tree = new Resource(RESOURCES.tree, game);
 
-map.addResourceToMap(0.02, tree);
-map.addResourceToMap(0.01, stone);
-map.addResourceToMap(0.01, grass);
-map.addResourceToMap(0.001, water);
+map.addResourceToMap(0.02, RESOURCES.tree);
+map.addResourceToMap(0.01, RESOURCES.stone);
+map.addResourceToMap(0.01, RESOURCES.grass);
+map.addResourceToMap(0.001, RESOURCES.water);
 
-map.growResources(tree, 2, 0.1, 30);
-map.growResources(grass, 1, 0.01, 30);
-map.growResources(water, 1, 0.2, 10);
+// map.growResources(tree, 2, 0.1, 30);
+// map.growResources(grass, 1, 0.01, 30);
+// map.growResources(water, 1, 0.2, 10);
 
-map.smoothingResources(tree, 3, 10);
-map.smoothingResources(water, 4, 10);
+// map.smoothingResources(tree, 3, 10);
+// map.smoothingResources(water, 4, 10);
 
 console.log(map.map);
 

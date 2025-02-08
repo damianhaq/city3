@@ -44,11 +44,11 @@ export class Map {
     );
   }
 
-  addResourceToMap(chance, resource) {
+  addResourceToMap(chance, RESOURCE) {
     this.map.forEach((row, y) => {
       row.forEach((cell, x) => {
         if (Math.random() < chance) {
-          this.map[y][x] = resource;
+          this.map[y][x] = new Resource(RESOURCE, game);
         }
       });
     });

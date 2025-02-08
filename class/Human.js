@@ -1,5 +1,6 @@
 import { GAME } from "../consts.js";
 import { drawTextOnMap, Vector } from "../DGamev3.js";
+import { Resource } from "./Resource.js";
 
 export class Human {
   constructor(x, y, game, map) {
@@ -55,7 +56,21 @@ export class Human {
 
   setDestination(x, y) {
     this.state = "walking";
+
+    // if destination exist, first remove outline from it
+    if (this.destination) {
+      console.log(x, y);
+      if (
+        this.map.getCell(this.destination.x, this.destination.y) instanceof
+        Resource
+      )
+        this.map.map[this.destination.y][this.destination.x].isOutline = false;
+    }
+
     this.destination = new Vector(x, y);
+
+    if (this.map.getCell(x, y) instanceof Resource)
+      this.map.map[y][x].isOutline = true;
   }
 
   update(deltaTime, deficiency) {
@@ -84,6 +99,9 @@ export class Human {
       if (distance < step) {
         this.x = this.destination.x;
         this.y = this.destination.y;
+
+        if (this.map.getCell(this.x, this.y) instanceof Resource)
+          this.map.map[this.y][this.x].isOutline = false;
         this.destination = null;
         this.state = null;
       } else {
