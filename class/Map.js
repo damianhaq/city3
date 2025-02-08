@@ -9,10 +9,6 @@ export class Map {
     this.height = height;
 
     this.map = this.createMap();
-
-    // this.mapGenerationConfig = {
-    //   forest: { seedChance: 0.01 },
-    // };
   }
 
   createMap(fill = null) {
@@ -21,7 +17,7 @@ export class Map {
       .fill(null)
       .map(() => new Array(this.height).fill(fill));
 
-    console.log("map created:", map);
+    // console.log("map created:", map);
     return map;
   }
 

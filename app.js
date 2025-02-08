@@ -17,13 +17,13 @@ const map = new Map(30, 30);
 // addDeficiency(RESOURCES.stone, 10);
 // console.log("deficiency", deficiency);
 
-// const humans = [];
+const humans = [];
 
-// const human = new Human(10, 1, game, map);
-// human.goToCell(3, 3);
+const human = new Human(10, 1, game, map);
+humans.push(human);
 // humans.push(human);
 
-// console.log("humans", humans);
+console.log("humans", humans);
 
 const stone = new Resource(RESOURCES.stone, game);
 const grass = new Resource(RESOURCES.grass, game);
@@ -41,6 +41,8 @@ map.growResources(water, 1, 0.2, 10);
 
 map.smoothingResources(tree, 3, 10);
 map.smoothingResources(water, 4, 10);
+
+console.log(map.map);
 
 game.onMouseWheel = function (e) {
   const zoomFactor = 5;
@@ -77,19 +79,21 @@ game.onClickLMB = function () {
 
   // const neighbourCount = map.countNeighbours(x, y, tree);
   // console.log("Neighbours Count", neighbourCount);
+
+  human.setDestination(x, y);
 };
 
 game.draw = function () {
   map.drawMap();
   map.drawMapBounds();
-  // humans.forEach((human) => human.draw(map.cellLength));
+  humans.forEach((human) => human.draw(GAME.cellLength));
 };
 
 game.update = function (deltaTime) {
   this.moveCameraRMB();
-  // humans.forEach((human) => {
-  //   human.update(deltaTime, deficiency);
-  // });
+  humans.forEach((human) => {
+    human.update(deltaTime, deficiency);
+  });
 };
 
 function createMap(cellsWidth, cellsHeight, fill = 0) {

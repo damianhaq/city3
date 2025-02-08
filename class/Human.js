@@ -1,9 +1,11 @@
-import { Vector } from "../DGamev3.js";
+import { GAME } from "../consts.js";
+import { drawTextOnMap, Vector } from "../DGamev3.js";
 
 export class Human {
   constructor(x, y, game, map) {
     this.x = x;
     this.y = y;
+    this.speedPerSec = GAME.cellLength * 0.1;
 
     this.game = game;
     this.map = map;
@@ -11,52 +13,58 @@ export class Human {
     this.isWorking = false;
 
     this.myTask = null;
+    this.state = null;
     this.destination = null;
   }
 
   draw(cellLength) {
+    this.game.ctx.fillStyle = "#FF0000"; // Kolor czerwony
+    this.game.ctx.strokeStyle = "#FF0000"; // Kolor czerwony
+
     // circle 1
     this.game.ctx.beginPath();
     this.game.ctx.arc(
-      this.x * cellLength - this.game.camera.x,
-      this.y * cellLength - this.game.camera.y,
+      this.x * cellLength - this.game.camera.x + GAME.cellLength / 2,
+      this.y * cellLength - this.game.camera.y + GAME.cellLength / 2,
       cellLength / 8,
       0,
       Math.PI * 2
     );
-    this.game.ctx.fillStyle = "#FF0000"; // Kolor czerwony
-    this.game.ctx.strokeStyle = "#FF0000"; // Kolor czerwony
 
     this.game.ctx.stroke();
 
     // circle 2
     this.game.ctx.beginPath();
     this.game.ctx.arc(
-      this.x * cellLength - this.game.camera.x,
-      this.y * cellLength - this.game.camera.y,
+      this.x * cellLength - this.game.camera.x + GAME.cellLength / 2,
+      this.y * cellLength - this.game.camera.y + GAME.cellLength / 2,
       cellLength / 16,
       0,
       Math.PI * 2
     );
 
     this.game.ctx.fill();
+
+    drawTextOnMap(
+      this.state,
+      this.x * cellLength,
+      this.y * cellLength,
+      this.game
+    );
   }
 
-  stepTo(vector, deltaTime, cellLength) {
-    // 2 cellLength na sekundę
-    const speed = 0.1 * cellLength;
-    const step = speed * deltaTime;
-    this.x += vector.x * step;
-    this.y += vector.y * step;
+  setDestination(x, y) {
+    this.state = "walking";
+    this.destination = new Vector(x, y);
   }
 
   update(deltaTime, deficiency) {
-    if (!this.isWorking) {
-      this.lookForTask(deficiency);
-    } else {
-      this.work();
-    }
+    this.movement(deltaTime);
+    this.drawLineToDestination();
+  }
 
+  movement(deltaTime) {
+    // go to destination
     if (this.destination) {
       const vector = new Vector(
         this.destination.x - this.x,
@@ -69,54 +77,58 @@ export class Human {
       deltaTime /= 1000;
 
       // Obliczamy dystans do przebycia w obecnej klatce
-      const speed = 2 * this.map.cellLength;
-      const step = speed * deltaTime; // upewnij się, że deltaTime jest w sekundach
+
+      const step = this.speedPerSec * deltaTime; // upewnij się, że deltaTime jest w sekundach
+      // console.log(step);
 
       if (distance < step) {
         this.x = this.destination.x;
         this.y = this.destination.y;
         this.destination = null;
+        this.state = null;
       } else {
-        this.stepTo(vector, deltaTime, this.map.cellLength);
+        this.x += vector.x * step;
+        this.y += vector.y * step;
       }
     }
+  }
 
-    // rysowanie linii do destynacji
+  drawLineToDestination() {
     if (this.destination) {
       this.game.ctx.beginPath();
       this.game.ctx.moveTo(
-        this.x * this.map.cellLength - this.game.camera.x,
-        this.y * this.map.cellLength - this.game.camera.y
+        this.x * GAME.cellLength - this.game.camera.x + GAME.cellLength / 2,
+        this.y * GAME.cellLength - this.game.camera.y + GAME.cellLength / 2
       );
       this.game.ctx.lineTo(
-        this.destination.x * this.map.cellLength - this.game.camera.x,
-        this.destination.y * this.map.cellLength - this.game.camera.y
+        this.destination.x * GAME.cellLength -
+          this.game.camera.x +
+          GAME.cellLength / 2,
+        this.destination.y * GAME.cellLength -
+          this.game.camera.y +
+          GAME.cellLength / 2
       );
       this.game.ctx.stroke();
     }
   }
 
-  lookForTask(deficiency) {
-    if (deficiency.length === 0) return;
+  // lookForTask(deficiency) {
+  //   if (deficiency.length === 0) return;
 
-    const task = deficiency[0];
-    deficiency.shift();
+  //   const task = deficiency[0];
+  //   deficiency.shift();
 
-    this.takeTask(task);
-  }
+  //   this.takeTask(task);
+  // }
 
-  takeTask(task) {
-    this.isWorking = true;
-    this.myTask = task;
-  }
+  // takeTask(task) {
+  //   this.isWorking = true;
+  //   this.myTask = task;
+  // }
 
   work() {}
 
-  setCellDestination(x, y) {
-    this.destination = { x, y };
-  }
-
-  goToCell(x, y) {
-    this.setCellDestination(x, y);
-  }
+  // setCellDestination(x, y) {
+  //   this.destination = { x, y };
+  // }
 }

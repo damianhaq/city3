@@ -4,7 +4,7 @@ export const GAME = {
   width: 1200,
   height: 800,
   showGrid: true,
-  mapZoom: 1,
+  // mapZoom: 1,
   cellLength: 30,
 };
 
