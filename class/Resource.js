@@ -1,11 +1,12 @@
-import { drawRectOnMap } from "./DGamev3.js";
+import { GAME } from "../consts.js";
+import { drawRectOnMap } from "../DGamev3.js";
 
 export class Resource {
-  constructor(resource, map, game) {
+  constructor(resource, game) {
     this.name = resource.name;
     this.id = resource.id;
     this.drawCallback = resource.drawCallback;
-    this.map = map;
+
     this.game = game;
 
     this.isOutline = false;
@@ -41,10 +42,10 @@ export class Resource {
     // draw outline
     if (this.isOutline)
       drawRectOnMap(
-        x * this.map.cellLength + 1,
-        y * this.map.cellLength + 1,
-        this.map.cellLength - 2,
-        this.map.cellLength - 2,
+        x * GAME.cellLength + 1,
+        y * GAME.cellLength + 1,
+        GAME.cellLength - 2,
+        GAME.cellLength - 2,
         this.game.ctx,
         this.game.camera
       );

@@ -1,74 +1,103 @@
-import { GAME, getCell, RESOURCES } from "./consts.js";
+import { deficiency, GAME, RESOURCES } from "./consts.js";
 import { drawCircleOnMap, drawRectOnMap, Game } from "./DGamev3.js";
-import { Resource } from "./Resource.js";
+import { Resource } from "./class/Resource.js";
+import { Human } from "./class/Human.js";
+
+import { Map } from "./class/Map.js";
 
 export const game = new Game();
 game.init("canvas", GAME.width, GAME.height, 1);
 game.updateCamera(600, 400);
 
-export const map = createMap(30, 30, 40);
+const map = new Map(30, 30);
 
-const stone = new Resource(RESOURCES.stone, map, game);
-const grass = new Resource(RESOURCES.grass, map, game);
-const water = new Resource(RESOURCES.water, map, game);
-const tree = new Resource(RESOURCES.tree, map, game);
+// DEFICIENCY
+// addDeficiency(RESOURCES.stone, 10);
+// addDeficiency(RESOURCES.tree, 5);
+// addDeficiency(RESOURCES.stone, 10);
+// console.log("deficiency", deficiency);
 
-addResourceToMap(map, 0.1, tree);
-addResourceToMap(map, 0.01, water);
-addResourceToMap(map, 0.1, grass);
-addResourceToMap(map, 0.1, stone);
+// const humans = [];
+
+// const human = new Human(10, 1, game, map);
+// human.goToCell(3, 3);
+// humans.push(human);
+
+// console.log("humans", humans);
+
+const stone = new Resource(RESOURCES.stone, game);
+const grass = new Resource(RESOURCES.grass, game);
+const water = new Resource(RESOURCES.water, game);
+const tree = new Resource(RESOURCES.tree, game);
+
+map.addResourceToMap(0.02, tree);
+map.addResourceToMap(0.01, stone);
+map.addResourceToMap(0.01, grass);
+map.addResourceToMap(0.001, water);
+
+map.growResources(tree, 2, 0.1, 30);
+map.growResources(grass, 1, 0.01, 30);
+map.growResources(water, 1, 0.2, 10);
 
 game.onMouseWheel = function (e) {
-  const zoomFactor = 10;
+  const zoomFactor = 5;
 
   // ile kratek jest po lewej stronie ekranu
-  const cellsOnLeft = (game.camera.x + GAME.width / 2) / map.cellLength;
+  const cellsOnLeft = (game.camera.x + GAME.width / 2) / GAME.cellLength;
   // ile kratek jest na górze ekranu
-  const cellsOnTop = (game.camera.y + GAME.height / 2) / map.cellLength;
+  const cellsOnTop = (game.camera.y + GAME.height / 2) / GAME.cellLength;
 
   // zoom in and out
   if (e.deltaY < 0) {
-    map.cellLength += zoomFactor;
+    // zoom in
+    GAME.cellLength += zoomFactor;
     game.camera.x += zoomFactor * cellsOnLeft;
     game.camera.y += zoomFactor * cellsOnTop;
   } else {
-    if (map.cellLength <= 10) return; // dont zoom out more than 10
-    map.cellLength -= zoomFactor;
+    // zoom out
+    if (GAME.cellLength <= 10) return; // dont zoom out more than 10
+    GAME.cellLength -= zoomFactor;
     game.camera.x -= zoomFactor * cellsOnLeft;
     game.camera.y -= zoomFactor * cellsOnTop;
   }
 
-  console.log("zoom", map.cellLength);
+  console.log("zoom, cellLength", GAME.cellLength);
 };
 
 game.onClickLMB = function () {
   // get cell position include camera position and camera
-  const x = Math.floor((game.mouse.x + game.camera.x) / map.cellLength);
-  const y = Math.floor((game.mouse.y + game.camera.y) / map.cellLength);
+  const x = Math.floor((game.mouse.x + game.camera.x) / GAME.cellLength);
+  const y = Math.floor((game.mouse.y + game.camera.y) / GAME.cellLength);
 
-  const cell = getCell(x, y, map);
+  const cell = map.getCell(x, y);
   console.log("LMB", x, y, cell);
+
+  // const neighbourCount = map.countNeighbours(x, y, tree);
+  // console.log("Neighbours Count", neighbourCount);
 };
 
 game.draw = function () {
-  drawMap(map);
+  map.drawMap();
+  map.drawMapBounds();
+  // humans.forEach((human) => human.draw(map.cellLength));
 };
 
 game.update = function (deltaTime) {
   this.moveCameraRMB();
+  // humans.forEach((human) => {
+  //   human.update(deltaTime, deficiency);
+  // });
 };
 
-console.log("map", map);
-
-function createMap(cellsWidth, cellsHeight, cellLength, fill = 0) {
+function createMap(cellsWidth, cellsHeight, fill = 0) {
   // create 2d array
   const arr = new Array(cellsWidth)
     .fill(null)
     .map(() => new Array(cellsHeight).fill(fill));
+
   const map = {
     width: cellsWidth,
     height: cellsHeight,
-    cellLength: cellLength,
     arr: arr,
   };
 
@@ -78,57 +107,13 @@ function createMap(cellsWidth, cellsHeight, cellLength, fill = 0) {
 function drawMap(map) {
   map.arr.forEach((row, y) => {
     row.forEach((resource, x) => {
-      if (resource !== 0) resource.draw(x, y);
+      if (resource instanceof Resource) {
+        resource.draw(x, y);
+        // console.log(resource.x);
+      }
     });
   });
 }
-
-// function drawResource(id, color, x, y) {
-//   switch (id) {
-//     case ID.stone:
-//       drawStone(
-//         x * map.cellLength + map.cellLength / 2,
-//         y * map.cellLength + map.cellLength / 2
-//       );
-//       break;
-//     case ID.grass:
-//       drawGrass(
-//         x * map.cellLength + map.cellLength / 2,
-//         y * map.cellLength + map.cellLength / 2
-//       );
-
-//       break;
-//     case ID.water:
-//       drawWater(
-//         x * map.cellLength + map.cellLength / 2,
-//         y * map.cellLength + map.cellLength / 2
-//       );
-//       break;
-//     case ID.tree:
-//       drawTree(
-//         x * map.cellLength + map.cellLength / 2,
-//         y * map.cellLength + map.cellLength / 2
-//       );
-//       break;
-//     default:
-//       break;
-//   }
-// }
-
-// function getColorById(id) {
-//   switch (id) {
-//     case ID.stone:
-//       return "#4f4f4f";
-//     case ID.grass:
-//       return "green";
-//     case ID.water:
-//       return "blue";
-//     case ID.tree:
-//       return "#199c1f";
-//     default:
-//       return "white";
-//   }
-// }
 
 function addResourceToMap(map, chance, id) {
   for (let y = 0; y < map.height; y++) {
@@ -137,5 +122,20 @@ function addResourceToMap(map, chance, id) {
         map.arr[y][x] = id;
       }
     }
+  }
+}
+
+function addDeficiency(resource, amount) {
+  const obj = {
+    resource,
+    amount,
+  };
+
+  // check if resource is already in deficiency array
+  const found = deficiency.find((def) => def.resource.id === resource.id);
+  if (found) {
+    found.amount += amount;
+  } else {
+    deficiency.push(obj);
   }
 }
