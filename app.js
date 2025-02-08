@@ -39,6 +39,9 @@ map.growResources(tree, 2, 0.1, 30);
 map.growResources(grass, 1, 0.01, 30);
 map.growResources(water, 1, 0.2, 10);
 
+map.smoothingResources(tree, 3, 10);
+map.smoothingResources(water, 4, 10);
+
 game.onMouseWheel = function (e) {
   const zoomFactor = 5;
 

@@ -59,13 +59,14 @@ export class Map {
   }
 
   growResources(resource, threshold, chance, iterations) {
-    let iteration = 0;
-    const interval = setInterval(() => {
-      if (iteration >= iterations) {
-        clearInterval(interval);
-        return;
-      }
+    // let iteration = 0;
+    // const interval = setInterval(() => {
+    //   if (iteration >= iterations) {
+    //     clearInterval(interval);
+    //     return;
+    //   }
 
+    for (let i = 0; i < iterations; i++) {
       const newMap = this.createMap();
       this.map.forEach((row, y) => {
         row.forEach((cell, x) => {
@@ -82,8 +83,28 @@ export class Map {
         });
       });
       this.map = newMap;
-      iteration++;
-    }, 100);
+    }
+    //   iteration++;
+    // }, 100);
+  }
+
+  smoothingResources(resource, neighborsToAlive, iterations) {
+    for (let i = 0; i < iterations; i++) {
+      const newMap = this.createMap();
+      this.map.forEach((row, y) => {
+        row.forEach((cell, x) => {
+          if (cell instanceof Resource && cell.id === resource.id) {
+            const neighbourCount = this.countNeighbours(x, y, resource);
+            if (neighbourCount > neighborsToAlive) {
+              newMap[y][x] = cell;
+            }
+          } else {
+            newMap[y][x] = cell;
+          }
+        });
+      });
+      this.map = newMap;
+    }
   }
 
   countNeighbours(cellX, cellY, resource) {
