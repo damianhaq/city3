@@ -21,11 +21,11 @@ export class Map {
     return map;
   }
 
-  drawMap() {
+  drawMap(deltaTime) {
     this.map.forEach((row, y) => {
       row.forEach((resource, x) => {
         if (resource instanceof Resource) {
-          resource.draw(x, y);
+          resource.draw(x, y, deltaTime);
         }
       });
     });

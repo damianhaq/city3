@@ -83,8 +83,8 @@ game.onClickLMB = function () {
   human.setDestination(x, y);
 };
 
-game.draw = function () {
-  map.drawMap();
+game.draw = function (deltaTime) {
+  map.drawMap(deltaTime);
   map.drawMapBounds();
   humans.forEach((human) => human.draw(GAME.cellLength));
 };

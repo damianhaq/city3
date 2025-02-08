@@ -1901,7 +1901,8 @@ export function drawRectOnMap(
   ctx,
   camera,
   color = "black",
-  lineWidth = 1
+  lineWidth = 1,
+  isFill = false
 ) {
   // Hard type checks and NaN checks for all parameters
   if (
@@ -1927,7 +1928,12 @@ export function drawRectOnMap(
   ctx.strokeStyle = color;
   ctx.beginPath();
   ctx.rect(x - camera.x, y - camera.y, width, height);
-  ctx.stroke();
+  if (isFill) {
+    ctx.fillStyle = color;
+    ctx.fill();
+  } else {
+    ctx.stroke();
+  }
   ctx.closePath();
   ctx.strokeStyle = "black";
   ctx.lineWidth = 1;

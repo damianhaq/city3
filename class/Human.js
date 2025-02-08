@@ -100,8 +100,10 @@ export class Human {
         this.x = this.destination.x;
         this.y = this.destination.y;
 
-        if (this.map.getCell(this.x, this.y) instanceof Resource)
+        if (this.map.getCell(this.x, this.y) instanceof Resource) {
           this.map.map[this.y][this.x].isOutline = false;
+          this.map.map[this.y][this.x].isHarvesting = true;
+        }
         this.destination = null;
         this.state = null;
       } else {
