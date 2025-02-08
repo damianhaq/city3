@@ -35,12 +35,12 @@ map.addResourceToMap(0.01, RESOURCES.stone);
 map.addResourceToMap(0.01, RESOURCES.grass);
 map.addResourceToMap(0.001, RESOURCES.water);
 
-// map.growResources(tree, 2, 0.1, 30);
-// map.growResources(grass, 1, 0.01, 30);
-// map.growResources(water, 1, 0.2, 10);
+map.growResources(RESOURCES.tree, 2, 0.1, 30);
+map.growResources(RESOURCES.grass, 1, 0.01, 30);
+map.growResources(RESOURCES.water, 1, 0.2, 10);
 
-// map.smoothingResources(tree, 3, 10);
-// map.smoothingResources(water, 4, 10);
+map.smoothingResources(RESOURCES.tree, 3, 10);
+map.smoothingResources(RESOURCES.water, 4, 10);
 
 console.log(map.map);
 

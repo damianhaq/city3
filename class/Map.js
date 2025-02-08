@@ -54,7 +54,7 @@ export class Map {
     });
   }
 
-  growResources(resource, threshold, chance, iterations) {
+  growResources(RESOURCE, threshold, chance, iterations) {
     // let iteration = 0;
     // const interval = setInterval(() => {
     //   if (iteration >= iterations) {
@@ -69,10 +69,10 @@ export class Map {
           if (this.getCell(x, y) instanceof Resource) {
             newMap[y][x] = this.getCell(x, y);
           } else {
-            const neighbourCount = this.countNeighbours(x, y, resource);
+            const neighbourCount = this.countNeighbours(x, y, RESOURCE);
             if (neighbourCount >= threshold) {
               if (Math.random() < chance) {
-                newMap[y][x] = resource;
+                newMap[y][x] = new Resource(RESOURCE, game);
               }
             }
           }
@@ -103,7 +103,7 @@ export class Map {
     }
   }
 
-  countNeighbours(cellX, cellY, resource) {
+  countNeighbours(cellX, cellY, RESOURCE) {
     let count = 0;
     for (let i = -1; i < 2; i++) {
       for (let j = -1; j < 2; j++) {
@@ -121,7 +121,7 @@ export class Map {
 
         if (
           this.getCell(neighbourX, neighbourY) instanceof Resource &&
-          this.getCell(neighbourX, neighbourY).id === resource.id
+          this.getCell(neighbourX, neighbourY).id === RESOURCE.id
         ) {
           count++;
           //   console.log("neighbour", this.getCell(neighbourX, neighbourY));
