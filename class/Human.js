@@ -6,10 +6,22 @@ export class Human {
   constructor(x, y, game, map) {
     this.x = x;
     this.y = y;
-    this.speedPerSec = GAME.cellLength * 0.1;
-
-    this.game = game;
     this.map = map;
+    this.workExperience = [
+      {
+        resourceID: 1, // stone
+        amount: 3,
+        harvestSpeed: 2,
+      },
+      {
+        resourceID: 2, // grass
+        amount: 3,
+        harvestSpeed: 1,
+      },
+    ];
+
+    this.speedPerSec = GAME.cellLength * 0.1;
+    this.game = game;
 
     this.isWorking = false;
 
@@ -100,9 +112,21 @@ export class Human {
         this.x = this.destination.x;
         this.y = this.destination.y;
 
-        if (this.map.getCell(this.x, this.y) instanceof Resource) {
-          this.map.map[this.y][this.x].isOutline = false;
-          this.map.map[this.y][this.x].isHarvesting = true;
+        const resource = this.map.getCell(this.x, this.y);
+
+        if (resource instanceof Resource) {
+          resource.isOutline = false;
+
+          // find experience with this resource
+          const exp = this.#getExperienceForResource(resource);
+          // console.log("exp", exp);
+
+          resource.harvest(
+            exp.amount,
+            exp.harvestSpeed,
+            this.finishHarvestCallback
+          );
+          this.isWorking = true;
         }
         this.destination = null;
         this.state = null;
@@ -111,6 +135,23 @@ export class Human {
         this.y += vector.y * step;
       }
     }
+  }
+
+  finishHarvestCallback() {
+    console.log("finish");
+    this.isWorking = false;
+    // console.log(this.workExperience);
+  }
+
+  addExperience(resource) {}
+
+  #getExperienceForResource(resource) {
+    let exp = this.workExperience.find((exp) => exp.resourceID === resource.id);
+    if (!exp) {
+      exp = { resourceID: resource.id, amount: 2, harvestSpeed: 1 };
+      this.workExperience.push(exp);
+    }
+    return exp;
   }
 
   drawLineToDestination() {

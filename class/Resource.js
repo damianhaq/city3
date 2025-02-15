@@ -1,5 +1,5 @@
 import { GAME } from "../consts.js";
-import { drawLineOnMap, drawRectOnMap } from "../DGamev3.js";
+import { drawLineOnMap, drawRectOnMap, drawTextOnMap } from "../DGamev3.js";
 
 export class Resource {
   constructor(resource, game) {
@@ -10,10 +10,15 @@ export class Resource {
     this.currentExtractionTime = resource.extactionTime;
     this.amount = resource.amount;
 
+    // harvest speed from human, if 2 then speed is * 2
+    this.harvestSpeed = 1;
+
     this.game = game;
 
     this.isOutline = false;
+    this.isShowAmount - false;
     this.isHarvesting = false;
+    this.harvestingCompleteCallback = null;
 
     this.#isValid(resource);
   }
@@ -59,30 +64,46 @@ export class Resource {
 
     // Update extraction progress if the resource is being harvested
     if (this.isHarvesting) {
-      // Decrease current extraction time based on deltaTime,
-      // ensuring it doesn't drop below 0
-      this.currentExtractionTime = Math.max(
-        0,
-        this.currentExtractionTime - deltaTime
-      );
+      this.calculateProgressbar(deltaTime);
 
-      // Calculate percentage of harvesting completed
-      const progressPercent =
-        ((this.extractionTime - this.currentExtractionTime) /
-          this.extractionTime) *
-        100;
-      console.log("Extraction progress:", progressPercent.toFixed(2) + "%");
-
-      // Optionally: reset harvesting once extraction is complete
-      if (this.currentExtractionTime === 0) {
-        this.isHarvesting = false;
-      }
       this.drawProgressBar(
         this.currentExtractionTime,
         this.extractionTime,
         x,
         y
       );
+    }
+
+    // draw amount
+    if (this.isShowAmount)
+      drawTextOnMap(
+        this.amount,
+        x * GAME.cellLength,
+        y * GAME.cellLength,
+        this.game
+      );
+  }
+
+  calculateProgressbar(deltaTime) {
+    // Decrease current extraction time based on deltaTime,
+    // ensuring it doesn't drop below 0
+    this.currentExtractionTime = Math.max(
+      0,
+      this.currentExtractionTime - deltaTime * this.harvestSpeed
+    );
+
+    // Calculate percentage of harvesting completed
+    // const progressPercent =
+    //   ((this.extractionTime - this.currentExtractionTime) /
+    //     this.extractionTime) *
+    //   100;
+    // console.log("Extraction progress:", progressPercent.toFixed(2) + "%");
+
+    // harvesting complete
+    if (this.currentExtractionTime === 0) {
+      this.isHarvesting = false;
+      this.harvestingCompleteCallback();
+      this.currentExtractionTime = this.extractionTime;
     }
   }
 
@@ -134,7 +155,24 @@ export class Resource {
     );
   }
 
-  harvest() {
+  harvest(amount, speed, callback) {
     this.isHarvesting = true;
+    this.harvestSpeed = speed;
+    this.harvestingCompleteCallback = callback;
+    if (this.amount >= amount) {
+      this.amount -= amount;
+      // dropItem(amount)
+    } else {
+      // dropItem(this.amount)
+      this.amount = 0;
+    }
+
+    if (this.amount === 0) {
+      this.removeSelf();
+    }
+  }
+
+  removeSelf() {
+    console.log("removeSelf");
   }
 }

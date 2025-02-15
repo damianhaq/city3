@@ -4,12 +4,20 @@ import { Resource } from "./class/Resource.js";
 import { Human } from "./class/Human.js";
 
 import { Map } from "./class/Map.js";
+import { Building } from "./class/Building.js";
 
 export const game = new Game();
 game.init("canvas", GAME.width, GAME.height, 1);
-game.updateCamera(600, 400);
+game.updateCamera(1500, 1500);
 
-const map = new Map(30, 30);
+const map = new Map(100, 100);
+
+const building = new Building([
+  { cellX: 50, cellY: 50 },
+  { cellX: 51, cellY: 50 },
+  { cellX: 51, cellY: 49 },
+  { cellX: 52, cellY: 50 },
+]);
 
 // DEFICIENCY
 // addDeficiency(RESOURCES.stone, 10);
@@ -19,7 +27,7 @@ const map = new Map(30, 30);
 
 const humans = [];
 
-const human = new Human(10, 1, game, map);
+const human = new Human(50, 50, game, map);
 humans.push(human);
 // humans.push(human);
 
@@ -80,13 +88,14 @@ game.onClickLMB = function () {
   // const neighbourCount = map.countNeighbours(x, y, tree);
   // console.log("Neighbours Count", neighbourCount);
 
-  human.setDestination(x, y);
+  // human.setDestination(x, y);
 };
 
 game.draw = function (deltaTime) {
   map.drawMap(deltaTime);
   map.drawMapBounds();
   humans.forEach((human) => human.draw(GAME.cellLength));
+  building.draw();
 };
 
 game.update = function (deltaTime) {
