@@ -9,65 +9,71 @@ export class Building {
         { cellX: 51, cellY: 50 },
         { cellX: 52, cellY: 50 },
       ] */
+
+    this.#isCellsCorrect(this.posCellsArr);
+  }
+
+  #check4Neighbors(cell, arr) {
+    let isTop = false;
+    let isRight = false;
+    let isBottom = false;
+    let isLeft = false;
+
+    arr.forEach((neig) => {
+      if (cell.cellX === neig.cellX && cell.cellY === neig.cellY) {
+        // cell is neig
+      } else {
+        // check top
+        if (cell.cellX === neig.cellX && cell.cellY === neig.cellY + 1) {
+          isTop = true;
+        }
+
+        // right
+        if (cell.cellX === neig.cellX - 1 && cell.cellY === neig.cellY) {
+          isRight = true;
+        }
+
+        // bottom
+        if (cell.cellX === neig.cellX && cell.cellY === neig.cellY - 1) {
+          isBottom = true;
+        }
+
+        // left
+        if (cell.cellX === neig.cellX + 1 && cell.cellY === neig.cellY) {
+          isLeft = true;
+        }
+      }
+    });
+
+    return { isTop, isRight, isBottom, isLeft };
   }
 
   draw() {
     for (let i = 0; i < this.posCellsArr.length; i++) {
       const el1 = this.posCellsArr[i];
 
-      let drawTop = true;
-      let drawRight = true;
-      let drawBotttom = true;
-      let drawLeft = true;
-
-      for (let j = 0; j < this.posCellsArr.length; j++) {
-        const el2 = this.posCellsArr[j];
-
-        // check if cell is self
-        if (el1.cellX === el2.cellX && el1.cellY === el2.cellY) {
-        } else {
-          // check top
-          if (el1.cellX === el2.cellX && el1.cellY === el2.cellY + 1) {
-            drawTop = false;
-          }
-
-          // right
-          if (el1.cellX === el2.cellX - 1 && el1.cellY === el2.cellY) {
-            drawRight = false;
-          }
-
-          // bottom
-          if (el1.cellX === el2.cellX && el1.cellY === el2.cellY - 1) {
-            drawBotttom = false;
-          }
-
-          // left
-          if (el1.cellX === el2.cellX + 1 && el1.cellY === el2.cellY) {
-            drawLeft = false;
-          }
-        }
-      }
+      const neig = this.#check4Neighbors(el1, this.posCellsArr);
 
       this.#drawRect(
         el1.cellX,
         el1.cellY,
-        drawTop,
-        drawRight,
-        drawBotttom,
-        drawLeft
+        !neig.isTop,
+        !neig.isRight,
+        !neig.isBottom,
+        !neig.isLeft
       );
 
-      drawTextOnMap(
-        `${el1.cellX},
-        ${el1.cellY},
-        ${drawTop},
-        ${drawRight},
-        ${drawBotttom},
-        ${drawLeft}`,
-        el1.cellX * GAME.cellLength,
-        el1.cellY * GAME.cellLength,
-        game
-      );
+      // drawTextOnMap(
+      //   `${el1.cellX},
+      //   ${el1.cellY},
+      //   ${drawTop},
+      //   ${drawRight},
+      //   ${drawBotttom},
+      //   ${drawLeft}`,
+      //   el1.cellX * GAME.cellLength,
+      //   el1.cellY * GAME.cellLength,
+      //   game
+      // );
     }
   }
 
@@ -140,6 +146,45 @@ export class Building {
         "#0576F8FF",
         2
       );
+    }
+  }
+
+  #isCellsCorrect(arr) {
+    let correct = true;
+    if (arr.length !== 1) {
+      arr.forEach((cell) => {
+        const neig = this.#check4Neighbors(cell, arr);
+
+        if (neig.isTop || neig.isRight || neig.isBottom || neig.isLeft) {
+          console.log("correct cell");
+        } else {
+          correct = false;
+          console.warn("incorrect cell");
+        }
+      });
+    }
+
+    return correct;
+  }
+
+  addCell(cellX, cellY) {
+    // check if that cell exist
+
+    if (
+      this.posCellsArr.find(
+        (el) => el.cellX === cellX && el.cellY === cellY
+      ) === undefined
+    ) {
+      // create copy -> add cell -> check if is correct
+      if (this.#isCellsCorrect([...this.posCellsArr, { cellX, cellY }])) {
+        this.posCellsArr.push({ cellX, cellY });
+        console.log("building:", this.posCellsArr);
+      } else {
+        // console.warn("cells are incorrect");
+      }
+    } else {
+      console.warn("this cell exist", cellX, cellY);
+      console.log("building:", this.posCellsArr);
     }
   }
 }

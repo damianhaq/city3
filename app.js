@@ -15,7 +15,7 @@ const map = new Map(100, 100);
 const building = new Building([
   { cellX: 50, cellY: 50 },
   { cellX: 51, cellY: 50 },
-  { cellX: 51, cellY: 49 },
+  { cellX: 53, cellY: 49 },
   { cellX: 52, cellY: 50 },
 ]);
 
@@ -79,16 +79,17 @@ game.onMouseWheel = function (e) {
 
 game.onClickLMB = function () {
   // get cell position include camera position and camera
-  const x = Math.floor((game.mouse.x + game.camera.x) / GAME.cellLength);
-  const y = Math.floor((game.mouse.y + game.camera.y) / GAME.cellLength);
+  const cellX = Math.floor((game.mouse.x + game.camera.x) / GAME.cellLength);
+  const cellY = Math.floor((game.mouse.y + game.camera.y) / GAME.cellLength);
 
-  const cell = map.getCell(x, y);
-  console.log("LMB", x, y, cell);
+  const cell = map.getCell(cellX, cellY);
+  console.log("LMB", cellX, cellY, cell);
 
   // const neighbourCount = map.countNeighbours(x, y, tree);
   // console.log("Neighbours Count", neighbourCount);
 
   // human.setDestination(x, y);
+  building.addCell(cellX, cellY);
 };
 
 game.draw = function (deltaTime) {
