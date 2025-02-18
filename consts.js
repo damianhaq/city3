@@ -1,12 +1,18 @@
 import { drawStone, drawGrass, drawWater, drawTree } from "./functions.js";
 
+export const GAMESTATE = {
+  mainMenu: "mainmenu",
+  playing: "playing",
+};
+
 export const GAME = {
   width: 1200,
   height: 800,
   showGrid: true,
   // mapZoom: 1,
   cellLength: 30,
-  mode: null, // null, "plan"
+  state: GAMESTATE.mainMenu,
+  map: null,
 };
 
 export const deficiency = []; // tablica z brakami surowców
