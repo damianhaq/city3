@@ -41,7 +41,7 @@ export class Human {
       this.y * cellLength - this.game.camera.y + GAME.cellLength / 2,
       cellLength / 8,
       0,
-      Math.PI * 2
+      Math.PI * 2,
     );
 
     this.game.ctx.stroke();
@@ -53,7 +53,7 @@ export class Human {
       this.y * cellLength - this.game.camera.y + GAME.cellLength / 2,
       cellLength / 16,
       0,
-      Math.PI * 2
+      Math.PI * 2,
     );
 
     this.game.ctx.fill();
@@ -62,16 +62,16 @@ export class Human {
       this.state,
       this.x * cellLength,
       this.y * cellLength,
-      this.game
+      this.game,
     );
   }
 
-  setDestination(x, y) {
+  setDestination(cellX, cellY) {
     this.state = "walking";
 
     // if destination exist, first remove outline from it
     if (this.destination) {
-      console.log(x, y);
+      console.log(cellX, cellY);
       if (
         this.map.getCell(this.destination.x, this.destination.y) instanceof
         Resource
@@ -79,10 +79,10 @@ export class Human {
         this.map.map[this.destination.y][this.destination.x].isOutline = false;
     }
 
-    this.destination = new Vector(x, y);
+    this.destination = new Vector(cellX, cellY);
 
-    if (this.map.getCell(x, y) instanceof Resource)
-      this.map.map[y][x].isOutline = true;
+    if (this.map.getCell(cellX, cellY) instanceof Resource)
+      this.map.map[cellY][cellX].isOutline = true;
   }
 
   update(deltaTime, deficiency) {
@@ -95,7 +95,7 @@ export class Human {
     if (this.destination) {
       const vector = new Vector(
         this.destination.x - this.x,
-        this.destination.y - this.y
+        this.destination.y - this.y,
       );
       const distance = Math.sqrt(vector.x ** 2 + vector.y ** 2);
       vector.normalize();
@@ -124,7 +124,7 @@ export class Human {
           resource.harvest(
             exp.amount,
             exp.harvestSpeed,
-            this.finishHarvestCallback
+            this.finishHarvestCallback,
           );
           this.isWorking = true;
         }
@@ -159,7 +159,7 @@ export class Human {
       this.game.ctx.beginPath();
       this.game.ctx.moveTo(
         this.x * GAME.cellLength - this.game.camera.x + GAME.cellLength / 2,
-        this.y * GAME.cellLength - this.game.camera.y + GAME.cellLength / 2
+        this.y * GAME.cellLength - this.game.camera.y + GAME.cellLength / 2,
       );
       this.game.ctx.lineTo(
         this.destination.x * GAME.cellLength -
@@ -167,7 +167,7 @@ export class Human {
           GAME.cellLength / 2,
         this.destination.y * GAME.cellLength -
           this.game.camera.y +
-          GAME.cellLength / 2
+          GAME.cellLength / 2,
       );
       this.game.ctx.stroke();
     }

@@ -17,10 +17,18 @@ game.updateCamera(1500, 1500);
 //   { cellX: 52, cellY: 50 },
 // ]);
 
-const button = document.createElement("button");
-button.textContent = "Create new map";
-document.body.appendChild(button);
-button.addEventListener("click", (ev) => createNewMap(ev));
+const humans = [];
+
+const button1 = document.createElement("button");
+button1.textContent = "Create new map";
+document.body.appendChild(button1);
+button1.addEventListener("click", (ev) => createNewMap(ev));
+
+//
+const button2 = document.createElement("button");
+button2.textContent = "Create new human";
+document.body.appendChild(button2);
+button2.addEventListener("click", (ev) => createNewHuman(ev));
 
 function createNewMap(ev) {
   const map = new Map(100, 100);
@@ -42,19 +50,22 @@ function createNewMap(ev) {
   GAME.state = GAMESTATE.playing;
 }
 
+function createNewHuman(ev) {
+  const human = new Human(50, 50, game, GAME.map);
+  humans.push(human);
+
+  console.log("humans", humans);
+}
+
 // DEFICIENCY
 // addDeficiency(RESOURCES.stone, 10);
 // addDeficiency(RESOURCES.tree, 5);
 // addDeficiency(RESOURCES.stone, 10);
 // console.log("deficiency", deficiency);
 
-const humans = [];
-
 // const human = new Human(50, 50, game, map);
 // humans.push(human);
 // humans.push(human);
-
-console.log("humans", humans);
 
 // const stone = new Resource(RESOURCES.stone, game);
 // const grass = new Resource(RESOURCES.grass, game);
@@ -88,13 +99,13 @@ game.onMouseWheel = function (e) {
 
 game.onClickLMB = function () {
   // get cell position include camera position and camera
-  // const cellX = Math.floor((game.mouse.x + game.camera.x) / GAME.cellLength);
-  // const cellY = Math.floor((game.mouse.y + game.camera.y) / GAME.cellLength);
-  // const cell = map.getCell(cellX, cellY);
-  // console.log("LMB", cellX, cellY, cell);
-  // const neighbourCount = map.countNeighbours(x, y, tree);
+  const cellX = Math.floor((game.mouse.x + game.camera.x) / GAME.cellLength);
+  const cellY = Math.floor((game.mouse.y + game.camera.y) / GAME.cellLength);
+  const cell = GAME.map.getCell(cellX, cellY);
+  console.log("LMB", cellX, cellY, cell);
+  // const neighbourCount = GAME.map.countNeighbours(x, y, tree);
   // console.log("Neighbours Count", neighbourCount);
-  // human.setDestination(x, y);
+  humans[0].setDestination(cellX, cellY);
   // building.addCell(cellX, cellY);
 };
 
